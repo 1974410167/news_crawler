@@ -41,10 +41,9 @@ class BatchSearchRequest(BaseModel):
     symbols: List[str]
     days: int = 3
     limit_per_symbol: int = 5
-    sources: Optional[List[str]] = None
 
 class BatchSearchResponse(BaseModel):
-    results: dict
+    results: Dict[str, List[NewsItemResponse]]
 
 class IngestRunResponse(BaseModel):
     fetched_total: int

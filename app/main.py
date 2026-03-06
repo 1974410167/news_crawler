@@ -56,26 +56,23 @@ async def search_news(
 
 @app.post("/v1/news/search/batch", response_model=BatchSearchResponse)
 async def batch_search(request: BatchSearchRequest, api_key: str = Depends(verify_api_key), db: Session = Depends(get_db)):
-    """批量搜索多只股票新闻"""
+    """批量搜索多只股票新闻（使用全部数据源）"""
     cutoff_date = datetime.now() - timedelta(days=request.days)
     results = {}
     for symbol in request.symbols:
         query = db.query(NewsItem).filter(NewsItem.symbol == symbol.upper(), NewsItem.published_at >= cutoff_date)
-        if request.sources: 
-            query = query.filter(NewsItem.source.in_(request.sources))
         results[symbol.upper()] = query.order_by(desc(NewsItem.published_at)).limit(request.limit_per_symbol).all()
     return BatchSearchResponse(results=results)
 
 @app.post("/v1/ingest/run", response_model=IngestRunResponse)
 async def run_ingest_api(
     symbols: List[str] = Body(["AMD", "INTC", "MSFT"]), 
-    days: int = Body(3), 
-    sources: Optional[List[str]] = Body(None),
+    days: int = Body(3),
     include_macro: bool = Body(True),
     api_key: str = Depends(verify_api_key)
 ):
-    """手动触发新闻采集"""
-    stats = run_ingestion(symbols, days, sources, include_macro)
+    """手动触发新闻采集（使用全部数据源）"""
+    stats = run_ingestion(symbols, days, None, include_macro)
     return IngestRunResponse(**stats)
 
 
