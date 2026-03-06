@@ -90,6 +90,6 @@ MESSAGE="${MESSAGE}
 🤖 自动报告 | News Service"
 
 # 通过 OpenClaw 发送到飞书
-openclaw message send -t "ou_1f0dfac373311ed5ab5cb9de75539dcc" -m "$MESSAGE"
+openclaw message send --channel feishu -t "user:ou_1f0dfac373311ed5ab5cb9de75539dcc" -m "$MESSAGE"
 
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ 日报发送成功：${TOTAL} 条新闻"
